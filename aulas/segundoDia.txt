@@ -1,0 +1,55 @@
+
+--- para executar o backend do servidor rodar: 'npm start'
+
+CONCEITO DE ROTA VS. RECURSO:
+    - Rota: é o caminho dentro da sua aplicação (por exemplo: localhost:3000/users/nomes);
+    - Recursos: é o que é requisitado (por exemplo: é requisitada a lista de nomes dos usuários daquela aplicação), geralmente
+        associado à uma tabela do banco, entidade etc.
+    
+MÉTODOS HTTP:
+    - .GET: buscar alguma informação do backend;
+    - .POST: criar uma informação no backend;
+    - .PUT: alterar uma informação do backend;
+    - .DELETE: deletar alguma informação no backend.
+
+TIPOS DE PARÂMETROS:
+    - Query Params: Parâmetros nomeados enviados na rota após "?" (Filtros, paginação) - localhost:3333/users?name=Bruna;
+    - Route Params: Parâmetros utilizados para identificar recursos - localhost:3333/users/:id;
+    - Request Body: Corpo da requisição utilizado para criar ou alterar recursos.
+
+BANCO DE DADOS:
+    - SQL: bancos relacionais - utilizaremos o SQLite, SQL é uma linguagem universal (ou seja, podemos com a mesma aplicação utilizar
+        o SQLite, MySQL, etc);
+            
+            - Driver: SELECT * FROM users
+            - Query Builder: utilizamos JS para montar a Query - table('users').select('*').where(...) <--- utilizaremos o Query Builder
+
+    - NoSQL: bancos não relacionais - MongoDB -> muito livre e pouco estruturado, cada um possui uma linguagem única - inflexível.
+
+    ----------------------------------------------
+    - ENTIDADES:
+        - ONG;
+        - Caso (incident).
+
+    - FUNCIONALIDADES:
+        - Login de ONG;
+        - Logout de ONG;
+        - Cadastro de ONG;
+        - Cadastrar novos casos;
+        - Deletar casos;
+        - Listar casos específicos de uma ONG;
+        - Listar todos os casos;
+        - Entrar em contato com a ONG.
+
+    ----------------------------------------------
+    - npx knex migrate:make create_ongs     --> cria a migration da tabela de ongs;
+    - npx knex migrate:latest               --> Roda a migration criada com os respectivos atributos daquela tabela, criando-a no BD;
+    - npx knex migrate:rollback             --> Faz drop da tabela criada pelo último migrate;
+    - npx knex migrate:status               --> Lista todas as migrations já executadas até então, e se tem alguma pendente.
+
+ARQUIVO GITIGNORE:
+    - Quando enviamos um projeto para o git, temos que criar um arquivo dentro da nossa aplicação chamado de .gitignore, dentro
+        colocaremos todos os arquivos que não queremos que seja enviado para o Git.
+        - Fazendo uma aplicação JS, a pasta "node_modules" nunca é enviada ao Git (por ser muito pesada), e como o arquivo "package.json" 
+            já tem quais dependências usamos, qualquer um que entrar no nosso git e baixar o nosso código, basta rodar um "npm install" que
+            já irá instalar a "node_modules" e todas suas dependências.

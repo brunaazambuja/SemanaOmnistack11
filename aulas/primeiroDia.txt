@@ -1,0 +1,36 @@
+
+PRIMEIRO DIA - SEMANA OMNISTACK
+
+BACK-END:
+    - "Aquilo que o usuário não enxerga.";
+    - Regras de negócio; 
+    - Conexões com Banco de Dados;
+    - Envio de E-mail;
+    - Comunicação com Webservices;
+    - Autenticação do usuário;
+    - Criptografia e segurança.
+
+FRONT-END:
+    - Frontend web (react), frontend mobile (react native) ou serviços externos (servir informações).
+
+
+CONEXÃO BACK-FRONT:
+    - Utilizamos JSON (JavaScript Object Notation): estrutura de dados que realiza a conexão entre o Backend e o Frontend.
+
+API - Application Programming Interface.
+    - Cria uma aplicação que não tem a parte visual no Backend - essa parte visual Frontend será criada com React e React Native.
+    - API restful: segue padrões sobre métodos, tipos de parâmetros e etc.
+
+ABORDAGEM DE SPA:
+    - O Browser se encarrega de toda a parte de Frontend (HTML, CSS, JavaScript) e manda apenas uma requisição parao Backend,
+        que retorna o pedido com uma lista de dados em formato JSON (apenas dados, diferente da abordagem tradicional que
+        responde com uma página HTML completa) - o que resulta numa otimizção da performance da nossas aplicação.
+
+ABORDAGEM DO REACT NATIVE:
+    - Todo código feito é em JavaScript, e diferentemente da abordagem tradicional (cada extensão Android e IOS requere um código
+        diferente), e essa aplicação em JS consegue ser gerada tanto pra IOS (.ipa) quanto pra Android (.apk).
+
+EXPO:
+    - Framework pra React Native - apenas precisa instalar o aplicativo no celular (Expo - na appStore) e dentro dele tudo que precisamos
+        para rodar uma aplicação React Native já está instalado - como API de Mapa, GeoLocalização, Câmera, Sensores, Calendário etc.
+
