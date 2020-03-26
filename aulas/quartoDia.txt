@@ -166,3 +166,8 @@ MOBILE - REACT NATIVE
 TIPS:
     Quando queremos incluir variáveis em algum texto, trocamos as aspas por crase:
         `Herói do caso: ${incident.description}`
+
+
+
+    PARA RODAR O MOBILE BASTA RODAR "npm start" NA PASTA MOBILE E NA PASTA DO BACKEND.
+    PARA RODAR O WEB BASTA RODAR "npm start" NA PASTA FRONTEND E NA PASTA DO BACKEND.
