@@ -1,4 +1,7 @@
 
+SEGUNDO DIA - SEMANA OMNISTACK
+
+
 BACKEND
 
 --- para executar o backend do servidor rodar: 'npm start'

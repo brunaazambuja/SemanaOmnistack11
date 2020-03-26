@@ -1,6 +1,8 @@
 
 PRIMEIRO DIA - SEMANA OMNISTACK
 
+TEORIA
+
 BACK-END:
     - "Aquilo que o usuário não enxerga.";
     - Regras de negócio; 

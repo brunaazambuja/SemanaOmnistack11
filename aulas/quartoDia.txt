@@ -1,0 +1,168 @@
+
+QUARTO DIA - SEMANA OMNISTACK
+
+MOBILE - REACT NATIVE
+
+1. No terminal, rodar "npm install -g expo-cli" na pasta Semana OmniStack para instalar o EXPO - que será utilizado para 
+    simulações da aplicação mobile.
+
+2. Para verificar se o expo está instalado, roda "expo -h".
+
+3. No terminal rodar "expo init mobile" e escolher a opção template blank e abrir a pasta mobile no VSCode.
+
+4. Rodar "npm start" no terminal dentro da pasta mobile - abrirá uma página localhost:19002. 
+
+5. Baixar o app EXPO no celular e abrir a câmera para escanear o QR code da página localhost:19002 - após feito isso, o 
+    aplicativo de simulador no celular irá carregar e mostrar a interface. Mudar o nome e o slug da aplicação em "app.json", 
+    lembrando que o slug não pode ter espaço nem acento.
+
+6. Diferenças entre o React Native e o HTML:
+
+    - As tags não tem maior importância uma sobre a outra - exemplo: ao invés de ter <h1> e <p> como no HTML, temos apenas 
+        <Text>, e todo <Text> é text, um título não tem um significado maior dentro da minha página.
+
+    - Não temos IDs, a tag sempre vai receber um parâmetro style, que tem dentro um objeto contendo a estilização:
+        <View style = {styles.container}> ou <View style = {{ color: #fff, background: #428 }}>
+
+    -  Todos os displyas dentro do React já são "display: felx" por padrão - não existe display block, display inline block etc.
+        Ou seja, podemos usar alignItems, justifyContent, flex:1, etc sem precisar colocar "display" antes. 
+
+    - Nas propriedades, no CSS tradicional onde teríamos hífen (exemplo: background-color), teremos camelCase (backgroundColor). E 
+        valores que não são números precisam ter aspas simples por volta (exemplo: backgroundColor: '#FFF').
+
+    - No React não existe herança de estilos, ou seja, mesmo que a tag <Text> esteja dentro da tag <View>, os estilos de View
+        não serão aplicados em Text (por exemplo: mesmo que eu tenha "color: '#FFF'" na tag <View>, o texto de <Text> não
+        ficará da cor determinada, pois estão em tags diferentes, a herança não existe). Estilização própria do elemento.
+ 
+
+
+    ESTRUTURA BÁSICA DO APP:
+
+                    Importação das dependências <-------            import React from 'react';
+                                                                    import { StyleSheet, Text, View } from 'react-native';
+
+                                                                    export default function App() {
+                                                                      return (
+                    O que será mostrado na tela <-------                <View style={styles.container}>
+                                                                          <Text>Texto mostrado na tela</Text>
+                                                                        </View>
+                                                                      );
+                                                                    }
+
+                    Objeto contendo o estilo da <-------            const styles = StyleSheet.create({
+                        tag container                                 container: {
+                                                                        flex: 1,
+                                                                        backgroundColor: '#555',
+                                                                        alignItems: 'center',
+                                                                        justifyContent: 'center',
+                                                                      },
+                                                                    });
+
+7. Para configurar o ícone e a splash sreen (tela mostrada enquanto o app carrega) basta colocar as imagens dentro da pasta 
+    mobile/assets com os nomes icon.png e splash.png.
+
+8. Criamos uma pasta dentro chamada pages de src (pasta criada para armazenar todos os códigos feitos por nós), que irá armazenar 
+    todas as páginas do app. Cada página terá sua pasta própria dentro da pasta 'pages', contendo em si um 'index.js' e um
+    'styles.js' (importante notar que o arquivo de styles é JS agora, não mais CSS).
+
+                    Estrutura básica de cada    <-------            import React from 'react';
+                        page crida no app                           import { View, Image, Text } from 'react-native';
+
+                                                                    export default function Incidents(){
+                                                                        return (
+                                                                            <View />
+                                                                        );
+                                                                    }    
+
+9. Criamos um arquivo Routes.js na raiz 'src' que conterá as rotas do nosso app. Baixamos no terminal dentro da pasta
+    mobile "npm install @react-navigation/native", que será utilizado para routing.
+
+10. Rodamos agora "expo install react-native-gesture-handler react-native-reanimated react-native-screens react-native-safe-area-context @react-native-community/masked-view"
+    para instalar as dependências do routing.
+
+11. Rodamos agora "npm install @react-navigation/stack" para instalar os paths de routing quando a aplicação não tem um menu lateral,
+    ou seja, a navegação ocorre apenas por meio de botões.
+
+
+    ESTRUTURA BÁSICA DO ARQUIVO ROUTES:
+
+                                                                    import React from 'react';
+                Começamos importando as         <-------            import { createStackNavigator } from '@react-navigation/stack' 
+                    dependências                                    import { NavigationContainer } from '@react-navigation/native'
+
+                Criamos uma constante           <-------            const AppStack = createStackNavigator();
+                    pra criar o routing
+
+                Importamos as páginas da        <-------            import Incidents from './pages/Incidents';
+                    aplicação                                       import Detail from './pages/Detail';
+
+                                                                    export default function Routes(){
+                                                                        return (
+                Criamos essa estrutura que      <-------                    <NavigationContainer>
+                    conterá cada rota
+                                                                               <AppStack.Navigator>
+                                                                                    <AppStack.Screen name = "Incidents" component = {Incidents} />
+                                                                                    <AppStack.Screen name = "Detail" component = {Detail} />
+                                                                                </AppStack.Navigator>
+
+                                                                            </NavigationContainer>
+                                                                        );
+                                                                    } 
+
+12. Agora no nosso arquivo do App.js, podemos tirar tudo que tem a ver com React Native e apenas importar nossas rotas.
+
+                                                                    import React from 'react';
+
+                                                                    import Routes from './src/routes';
+
+                                                                    export default function App() {
+                                                                      return (
+                                                                        <Routes />
+                                                                      );
+                                                                    };
+
+13. Importar a logo e o style.js dentro do index em que vai ser usada: 
+    import logoImg from '../../assets/logo.png'
+    import styles from './styles';
+
+    ESTRUTURA BÁSICA DO STYLE.JS:
+                                                                    import { StyleSheet } from 'react-native';
+                                                                    
+                                                                    export default StyleSheet.create({
+                                                                        container: {}
+                                                                    });
+
+14. Instala rodando no terminal "expo install expo-constants" e importá-lo em styles.js "import Constants from 'expo-constants'".
+
+15. Para instalar a funcionalidade de enviar email do próprio app, rodar no terminal "expo install expo-mail-composer".
+
+16. Depois de feito o FrontEnd do nosso aplicativo mobile, devemos entrar na pasta do backend, e rodar "npm install" para 
+    iniciar a aplicação. Para testar se já está funcionando, abrir o Insomnia e ver se quando dá um 'send' ele retorna os dados.
+
+17. Dentro da pasta mobile rodar no terminal "npm install axios" que é o cliente http que vai ser responsável por fazer as 
+    chamas API e trazer o resultado do nosso backend com o Node. 
+
+18. Criar pasta 'services' com 'api.js' dentro: 
+                                                                    import axios from 'axios';
+
+                                                                    const api = axios.create({
+                Utilizamos              <-------                        baseURL: 'http://192.168.2.10:3333'
+            http:// IP DA SUA MÁQUINA:PORTA UTILIZADA               });
+
+                                                                    export default api;
+
+19. Instalar pacote INTL para formatar valores numéricos "npm install intl" e importar esse pacote em App.js, assim ele vai estar
+    disponível para todos os arquivos   import 'intl'; 
+                                        import 'intl/locale-data/jsonp/pt-BR';
+
+20. Sempre que precisar passar uma função que tem parâmetros, passar como:
+                    onPress = {() => navigateToDetail(incident)}
+    pois se eu passasse apenas:
+                    onPress = {navigateToDetail(incident)}
+    a função seria executada no ato, e não queremos isso.
+
+
+
+TIPS:
+    Quando queremos incluir variáveis em algum texto, trocamos as aspas por crase:
+        `Herói do caso: ${incident.description}`

@@ -1,4 +1,7 @@
 
+TERCEIRO DIA - SEMANA OMNISTACK
+
+
 FRONTEND
 
 Conceitos no REACT:
@@ -6,7 +9,7 @@ Conceitos no REACT:
         funcionalidades JavaScript, CSS etc - todo componente deve começar com letra maiúscula senão não funciona;
     - JSX: quando o HTML está integrado dentro do JS (escrito em JavaScript), chamamos de JSX (JavaScript XML - sintaxe do HTML).
     - PROPRIEDADES: correspondente aos 'atributos' em HTML (id, style, type etc.);
-    - 
+    
 
 
 HTML tips:
