@@ -25,6 +25,6 @@ module.exports = {
             uf
         })
     
-        return response.json({id, name});
+        return response.json({ id });
     }
 };

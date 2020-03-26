@@ -1,0 +1,33 @@
+
+FRONTEND
+
+Conceitos no REACT:
+    - COMPONENTE: no React nada mais é do que uma função que retorna HTML (são partes isoladas do código) - pode ter
+        funcionalidades JavaScript, CSS etc - todo componente deve começar com letra maiúscula senão não funciona;
+    - JSX: quando o HTML está integrado dentro do JS (escrito em JavaScript), chamamos de JSX (JavaScript XML - sintaxe do HTML).
+    - PROPRIEDADES: correspondente aos 'atributos' em HTML (id, style, type etc.);
+    - 
+
+
+HTML tips:
+    - Caso uma tag não tenha nenhum conteúdo dentro de si, podemos fechar dentro dela mesma, exemplo:
+            <Header></Header> --------- <Header /> 
+
+    - ESTADO: O conceito de Estado existe dentro do React, pois toda vez que o estado de uma variável for alterado, o componente
+        irá remontar, reinderizar novamente a página para que essa mudança seja refletida no HTML, exibindo essas novas atualizações
+        em tela. Dentro do React, por uma questão de performance, nunca podemos mudar o estado de uma variável de uma forma direta.
+        Para isso, devemos importar o useState:
+           
+
+importamos o useState juntamente com o React    <--------           import React, {useState} from 'react';
+
+                                                                    function App() {
+ao invés de fazer variável = 0                  <--------               let [counter, setCounter] = useState(0);
+fazemos [valor, funçãoAtualização], onde o                           
+setCounter é uma função utilizada para                          
+mudar o estado da variável.                         
+
+para alterar o valor da variável, fazemos       <--------               function increment(){
+isso através da funçao criada em sua                                        setCounter(counter++);
+inicialização (setCounter)                                              }
+                                                                    }
