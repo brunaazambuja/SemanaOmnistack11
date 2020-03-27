@@ -1,0 +1,157 @@
+
+QUINTO DIA - SEMANA OMNISTACK
+
+VALIDAÇÕES - TESTES - DEPLOY
+
+
+1. Instalar dentro da pasta de backend "npm install celebrate" para o pacote de validações;
+    - Celebrate integra o JOI (biblioteca de validação para JS) com o Express;
+
+2. As validações ficam junto das definições de rotas (routes.js), geralmente botamos validações nas rotas de criação
+    e nas rotas de alteração;
+                                                                const { celebrate, Segments, Joi } = require('celebrate');
+
+
+3. Para que o erro venha em formato de objeto, e não pare de rodar nossa aplicação, devemos adicionar um pacote no arquivo
+    'index.js' dentro da pasta 'backend/src/database', que irá formatar o erro dado:
+
+                                                                const { errors } = require('celebrate');
+                                                                app.use(errors());
+
+4. Validações feitas no body são diferentes de validações feitas no header da requisição:
+
+    ESTRUTURA BÁSICA DE VALIDAÇÃO COM PARÂMETROS NO BODY                                                               
+                                                                routes.post('/ongs', celebrate({
+                                                                    [Segments.BODY]: Joi.object().keys({
+                                                                        name: Joi.string().required(),
+                                                                        email: Joi.string().required().email(),
+                                                                        whatsapp: Joi.number().required().min(9),
+                                                                        city: Joi.string().required(),
+                                                                        uf: Joi.string().required().length(2)
+                                                                    })
+                                                                }), OngController.create); /* cadastro de ongs */
+                                                                
+                                                                
+    ESTRUTURA BÁSICA DE VALIDAÇÃO COM PARÂMETROS NO HEADER                                                                
+                                                                routes.get('/profile', celebrate({
+            Trocamos os parâmetros por  <-------                    [Segments.HEADERS]: Joi.object({
+            authorization dentro de (object)                            authorization: Joi.string().required()
+            não mais de (key); e (key) é                             }).unknown()
+            substituído por (unknown())                         }), ProfileController.index); /* listagem de todos os casos da ong logada */
+                                                                
+
+
+    ESTRUTURA BÁSICA DE VALIDAÇÃO COM PARÂMETROS NO PARAMS 
+                                                                routes.delete('/incidents/:id', celebrate({
+                                                                    [Segments.PARAMS]: Joi.object().keys({
+                                                                        id: Joi.number().required()
+                                                                    })
+                                                                }), IncidentController.delete); /* deleção de caso específico */
+
+
+5. TEST DRIVEN DEVELOPMENT: criação de testes ANTES do desenvolvimento do aplicação, como forma de mapeamento das regras de 
+    negócio que sua aplicação deve seguir. Devemos instalar o servidor de testes: rodar "npm install jest -D" na pasta do backend.
+
+6. Para rodar o servidor de testes, devemos fazer "npx jest --init" utilizando as configurações: yes, node, no, yes.
+
+7. Criamos uma pasta na raiz do projeto, chamada 'tests' com duas pastas dentro dela:
+    - 'integration': testes de integração vão testar um fluxo de uma rota inteira da nossa aplicação, testa por completo 
+        uma funcionalidade da nossa aplicação;
+    - 'unit': testes unitários testam uma parte da aplicação de forma muito isolada, algo que é próprio da nossa aplicação,
+        não encosta em qualquer outro tipo de conexão.
+
+
+    EXEMPLO DE TESTE UNITÁRIO:
+
+                                                                const generateUniqueId = require('../../src/utils/generateUniqueId');
+
+
+                                                                describe('Generate Unique ID', () => {
+                                                                    it('should generate an unique ID', () => {
+                                                                        const id = generateUniqueId();
+
+                                                                        expect(id).toHaveLength(8);
+                                                                    });
+                                                                });
+
+
+    EXEMPLO DE FUNÇÃO ISOLADA PARA TESTE:
+                                                                const crypto = require('crypto');
+
+                                                                module.exports = function generateUniqueId() {
+                                                                    return crypto.randomBytes(4).toString('HEX');
+                                                                }
+
+
+8. Depois de criados, para executar os testes devemos rodar "npm test" na própria pasta do backend. 
+
+9. Para testes realizados em banco de dados, devemos pegar o arquivo knexfile.js e duplicar a coluna de development:
+
+                                                                development: {
+                                                                    client: 'sqlite3',
+                                                                    connection: {
+                                                                      filename: './src/database/db.sqlite'
+                                                                    },
+                                                                    migrations: {
+                                                                      directory: './src/database/migrations'
+                                                                    },
+                                                                    useNullAsDefault: true,
+                                                                },
+                                                                
+                                                                
+        Apenas mudar o nome do objeto   <-------                test: {
+            para test                                               client: 'sqlite3',
+                                                                    connection: {
+        Assim como o nome do banco      <-------                    filename: './src/database/test.sqlite'
+                                                                    },
+                                                                    migrations: {
+                                                                      directory: './src/database/migrations'
+                                                                    },
+                                                                    useNullAsDefault: true,
+                                                                },
+
+10. Instalar no backend "npm install cross-env" e dentro de 'package.json' e mudar a linha:
+                    "test": "jest"
+        para:   
+                    "test": "cross-env NODE_ENV=test jest"
+
+    E dentro do arquivo 'database/migrations/connections.js' trocar a linha:
+
+                    const connection = knex(configuration.development);
+        pelas linhas:
+                    const config = process().env.NODE_ENV == 'test' ? configuration.test : configuration.development;
+                    const connection = knex(config);
+
+11. Instalar dentro do backend a biblioteca que fará os testes de integração "npm install supertest -D".
+
+12. Criar um arquivo na pasta 'src' com o nome de 'server.js' e trocar o nome do 'index.js' por 'app.js' e consequentemente
+    temos que trocar a linha:
+                    "start": "nodemon src/index.js" 
+    do arquivo 'package.json', pela linha:
+                    "start": "nodemon src/server.js".
+
+    Trocar a linha do arquivo 'app.js':
+                    app.listen(3333);   
+    pela linha:
+                    module.exports = app;
+            
+13. Importamos então o 'app.js' dentro do teste de integração 'ong.spec.js':
+                    const app = require('../../src/app');
+
+14. Quando rodarmos o teste de integração, vai dar um erro dizendo que a table não existe, pois nós criamos o banco de dados 
+    para teste mas ainda não populamos ele. Então, antes de rodar cada teste, devemos chamar o connections dentro do próprio
+    arquivo de teste e gerar as tabelas.
+
+                                                                const connection = require('../../src/database/connections');
+                                                                
+            Botamos esse beforeEach         <-------            beforeEach( async () => {
+                                                                    await connection.migrate.rollback();
+            antes da execução do teste,                             await connection.migrate.latest();
+            porém já dentro da função dele                      });
+
+    Assim como o beforeEach() - executa antes de cada teste, temos o afterEach() - executa depois de cada teste,
+        e o afterAll() - executa depois de todos os testes. 
+
+15. Se queremos dar deploy na nossa aplicação backend, tem um plano de graça no site Heroku (assistir vídeo RocketSeat deploy 
+    Heroku Node). Caso o produto tenha crescido e vire comercial, temos o site Digital Ocean, para hospedar nossa aplicação.
+    Já no caso da aplicação frontend, podemos usar o plano gratuito do Netlify.
