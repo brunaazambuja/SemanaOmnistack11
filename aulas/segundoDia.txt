@@ -58,3 +58,120 @@ ARQUIVO GITIGNORE:
         - Fazendo uma aplicação JS, a pasta "node_modules" nunca é enviada ao Git (por ser muito pesada), e como o arquivo "package.json" 
             já tem quais dependências usamos, qualquer um que entrar no nosso git e baixar o nosso código, basta rodar um "npm install" que
             já irá instalar a "node_modules" e todas suas dependências.
+
+
+PASSOS:
+
+
+1. Instalar o sistema Insomnia - entrar no site insomnia.com e ver os passos (rodar "sudo snap install insomnia"). Dentro do Insomnia, temos de
+    criar uma requisição, de acordo com nosso código criado em 'index.js' no backend, e botar a URL correspondente (http://localhost:3333/users).
+
+2. Para que a aplicação reconheça que nós vamos usar os dados em formato JSON, temos que botar dentro da pasta de backend, no arquivo 'index.js'
+    o "app.use(express.json());". 
+
+3. Para que a aplicação se reinicie sozinha, sem precisarmos cortar a operação e rodar novamente, vamos instalar um pacote "npm install nodemon -D".
+    Para que este pacote possa ser utilizado, devemos ir no arquivo 'package.json' e trocar o script chamado "test" por "start".
+        Trocar a linha "test":      "echo \"Error: no test specified\" && exit 1"
+        pela linha "start":         "nodemon index.js"
+
+    Com essa mudança feita, para que o backend da sua aplicação starte, basta rodar no terminal "npm start".
+
+4. Agora, para configurar o banco de dados que vamos usar nessa aplicação, temos que instalar o QueryBuilder, que será usado para criar querys direto
+    em JS. Para isso devemos entrar no site Knex.org, chegando na parte de instalation, temos os comandos de instalação.
+    Rodar "npm install knex", e depois "npm intall sqlite3" de acordo com o banco de dados que queremos usar. No nosso caso, o sqlite3.
+
+5. Executar no terminal "npx knex init" para inicializar o banco de dados da aplicação, que irá criar um arquivo 'knexfile.js' na raiz da aplicação.
+
+6. Criar uma pasta 'src' que contenha todos os códigos feitos por nós. Botamos o 'index.js' dentro dessa pasta, mas antes devemos trocar dentro do 
+    arquivo 'package.json', o "index.js" por "src/index.js".
+
+7. Dentro da pasta 'src', criar um arquivo routes.js que irá armazenar todas as rotas da aplicação.
+
+    ESTRUTURA DO ARQUIVO DE ROTAS:
+                                                                    const express = require('express');
+                                                                    const routes = express.Router();
+
+                                                                    routes.post('/sessions', (request, response) => {
+                                                                        const body = request.body;
+                                                                    });
+
+    ESTRUTURA DO ARQUIVO APP.JS:
+                                                                    module.exports = routes;
+                                                                    const routes = require('./routes');
+
+                                                                    app.use(routes);
+
+8. Dentro do arquivo 'knexfile.js' devemos mudar a linha:
+    "filename: './dev.sqlite3'"      para          filename: './src/database/db.sqlite'.
+
+9. Definir e mapear as entidades da sua aplicação, e as funcionalidades de cada uma delas. Dentro de 'src' 
+    devemos criar uma pasta 'database', com dentro outra pasta chamada 'migrations' e no arquivo 'knexfile.js', 
+    devemos alterar, inserindo as migrations logo após connection:
+
+                                                                    connection: {
+                                                                      filename: './src/database/db.sqlite'
+                                                                    },
+                                                                    migrations: {
+                                                                      directory: './src/database/migrations'
+                                                                    },
+                                                                    useNullAsDefault: true,
+
+10. Rodar dentro da pasta de backend "npx knex migrate:make create_ongs" - com o nome da entidade que você precisa. Preencher
+    o arquivo de migration criado de ONGs:
+
+    ESTRUTURA BÁSICA DE UMA MIGRATION:
+                                                                    exports.up = function(knex) {
+                                                                        return knex.schema.createTable('ongs', function(table){
+                                                                            table.string('id').primary();
+                                                                            table.string('name').notNullable();
+                                                                        });
+                                                                    };
+                                                                    
+                                                                    exports.down = function(knex) {
+                                                                        return knex.schema.dropTable('ongs');
+                                                                    };
+
+11. Para rodar a migration, basta rodar "npx knex migrate:latest". Um arquivo chamado db.sqlite é criado automaticamente
+    dentro da pasta de 'database'.
+
+12. Se uma table tiver uma Foreign Key (ou seja, uma chave de outra tabela), usaremos o seguinte:
+
+
+    ESTRUTURA BÁSICA DE UMA MIGRATION COM FOREIGN KEY E PRIMARY KEY:
+                                                                    exports.up = function(knex) {
+                                                                        return knex.schema.createTable('incidents', function(table){
+                                                                            table.increments();
+                                                                    
+                                                                            table.string('title').notNullable();
+                                                                    
+                                                                            table.string('ong_id').notNullable();
+                                                                            table.foreign('ong_id').references('id').inTable('ongs');
+                                                                        });
+                                                                    };
+
+13. Criar um arquivo 'connections.js' dentro da pasta 'database'.
+
+    ESTRUTURA BÁSICA DO CONNECTIONS.JS:
+                                                                    const knex = require('knex');
+                                                                    const configuration = require('../../knexfile');
+
+                                                                    const connection = knex(configuration.development);
+
+                                                                    module.exports = connection;
+    E agora basta importar esse arquivo no 'routes.js': "const connection = require('./database/connection')". Em 'routes.js':
+
+                                                                    await connection('ongs').insert({
+                                                                        id,
+                                                                        name,
+                                                                        email,
+                                                                        whatsapp,
+                                                                        city,
+                                                                        uf
+                                                                    })
+
+14. Criar pasta dentro de 'src' com o nome 'controllers', que conterá todas as rotas de todas as páginas, que serão importadas
+    pelo arquivo 'routes.js': "const OngController = require('./controllers/OngController');" e 
+    "routes.get('/ongs', OngController.index);".
+
+15. Instalar o módulo de segurança CORS - rodar "npm install cors" e dentro do arquivo 'index.js':
+    "const cors = require('cors');"     e       "app.use(cors());".

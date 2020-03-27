@@ -159,7 +159,7 @@ MOBILE - REACT NATIVE
                     onPress = {() => navigateToDetail(incident)}
     pois se eu passasse apenas:
                     onPress = {navigateToDetail(incident)}
-    a função seria executada no ato, e não queremos isso.
+    a função seria executada no ato, e não queremos isso. 
 
 
 

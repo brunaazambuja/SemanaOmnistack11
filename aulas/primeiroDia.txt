@@ -3,6 +3,12 @@ PRIMEIRO DIA - SEMANA OMNISTACK
 
 TEORIA
 
+NODE.JS:
+    - É o motor, que interpreta JS por fora do navegador - no Backend.
+
+GERENCIADOR DE PACOTES:
+    - Ferramenta pra automatizar e facilitar a instalação de pacotes dentro da nossa máquina. 
+
 BACK-END:
     - "Aquilo que o usuário não enxerga.";
     - Regras de negócio; 
@@ -36,3 +42,38 @@ EXPO:
     - Framework pra React Native - apenas precisa instalar o aplicativo no celular (Expo - na appStore) e dentro dele tudo que precisamos
         para rodar uma aplicação React Native já está instalado - como API de Mapa, GeoLocalização, Câmera, Sensores, Calendário etc.
 
+
+
+                BACKEND     -----------> FRONTEND - WEB (ReactJS)
+                NODE.JS     
+                            -----------> FRONTEND - MOBILE (React Native)
+
+                            -----------> Serviços Externos
+
+
+
+PASSOS:
+
+1. Instalar o Node.js - entrar na página nodejs.org e clicar em "installing Node.js via package manager". Entrar na distribuição para ubuntu
+    que vai abrir um github com instruções. Executar os comandos escritos lá, e depois "sudo apt-get intall -y nodejs".
+    Depois, executa "node -v" para ver qual versão está instalada, e depois "npm -v". NPM é o gerenciador de pacotes que iremos usar.
+
+2. No VSCode, baixar a extensão 'Material Icon Theme', para botar logos nos arquivos de acordo com sua extensão.
+
+3. Criar uma pasta para o projeto, e uma pasta dentro 'Backend'. Rodar "npm init -y" dentro dessa pasta, para já aceitar todas as perguntas que ele 
+    faria. Esse comando ira criar um arquivo chamamdo 'package.json' com nossas configurações de projeto (armazena as informações das dependências 
+    que a gente for instalar ao longo do projeto - esse arquivo package.json existirá tanto no Node, como no ReactJS, como no React Native, contém
+    informações do tipo, qual o arquivo principal etc).
+
+4. Utilizaremos um Framework de rotas, instalar "npm install express", que criará um arquivo 'package-lock.json', e uma pasta 'node_modules'.
+
+5. Criamos então um arquivo 'index.js', que conterá o principal da nossa aplicação - importamos o pacote que acabamos de instalar: 
+    "const express = require('express');" e "const app = express();" e "app.listen(3333);".
+
+6. Para executar o arquivo que acabamos de criar, basta rodar "node index.js", e abrir o navegador com localhost:3333.
+
+7. Saindo da pasta de Backend, rodamos o comando "npx create-react-app frontend", que instalará o pacote de front na nossa máquina,
+    e já criando por si só a pasta de Front. Dentro dessa pasta rodar "npm start", e logo em seguida abrirá uma aba do seu navegador,
+    com 'localhost:3000'.
+
+8. Instalar o Expo no celular, pela AppStore, ou PlayStore mesmo.

@@ -34,3 +34,192 @@ para alterar o valor da variável, fazemos       <--------               functio
 isso através da funçao criada em sua                                        setCounter(counter++);
 inicialização (setCounter)                                              }
                                                                     }
+
+
+PASSOS:
+
+
+1. Já dentro da pasta do frontend, vamos começar limpando a estrutura, apagando os arquivos que não vão ser necessários para
+    essa aplicação:
+        - README.md                 - App.CSS
+        - App.test.JS               - index.CSS
+        - logo.svg                  - serviceWorker.JS
+        - setUpTest.JS              - public/robots.txt
+        - public/manifest.json      - public/logo192.png
+        - public/logo192.png        
+
+2. Entrar no arquivo 'index.js' e deletar as importações dos arquivos que deletamos, bem como os comentários e a parte do 
+    serviceWorker. Fazer isso no App.js também.
+
+3. Dentro de 'public/index.html' deletar tudo e deixar apenas, com o nome da aplicação:
+
+                                                                    <!DOCTYPE html>
+                                                                    <html lang="en">
+                                                                      <head>
+                                                                        <meta charset="utf-8" />
+                                                                        <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
+                                                                        <meta name="viewport" content="width=device-width, initial-scale=1" />
+                                                                        <meta name="theme-color" content="#000000" />
+                                                                    
+                                                                        <title>Be The Hero</title>
+                                                                      </head>
+                                                                      <body>
+                                                                        <noscript>You need to enable JavaScript to run this app.</noscript>
+                                                                        <div id="root"></div>
+                                                                    
+                                                                      </body>
+                                                                    </html>
+
+4. Dentro da pasta 'src', criar pasta 'assets' e botar as logos dentro dessa página.
+
+5. Criar uma pasta dentro de 'src' chamada 'pages', onde cada página da sua aplicação vai ter outra pasta dentro desta 'pages',
+    pasta pages: 
+        -pasta Logon:
+            -index.js
+            -styles.CSS
+        -pasta NewIncident:
+            -index.js
+            -styles.CSS
+        -pasta Profile:
+            -index.js
+            -styles.CSS
+
+6. Criar um arquivo em 'src' um arquivo 'global.css' que contenha os estilos que você quer que esteja em todas as páginas da
+    nossa aplicação. Importar esse arquivo dentro de 'App.js': "import './global.css';".
+
+7. Apertar (Ctrl + Shift + P) e pesquisar 'settings.json' e adicionar linhas:
+        "emmet.syntaxProfiles": {"javascript": "jsx"},
+        "emmet.includeLanguages": {"javascript": "javascriptreact"},
+    para que abilite a configuração de fazer div.exemplo e criar a <div className = "exemplo" />
+
+8. Importar as logos de dentro da pasta assets e configurar as páginas.
+
+9. Instalar o pacote que contém os ícones das páginas, na pasta frontend: "npm install react-icons". Para usar os ícones,
+    basta importar na página usada: "import { FiLogIn } from 'react-icons/fi'".
+
+10. Instalar o pacote de gerenciador de rotas da aplicação: "npm install react-router-dom". Criar um arquivo 'routes.js' na pasta 
+    'src'.
+
+    ESTRUTURA BÁSICA DO ROUTES:
+                                                import React from 'react';
+                                                import { BrowserRouter, Route, Switch } from 'react-router-dom';
+                                                
+                                                import Logon from './pages/Logon'
+                                                import Register from './pages/Register'
+                                                
+                                                export default function Routes(){
+                                                    return (
+                                                        <BrowserRouter>
+                                                            <Switch>
+                                                                <Route path = "/" exact component = {Logon} />
+                                                                <Route path = "/register" component = {Register} />
+                                                            </Switch>
+                                                        </BrowserRouter>
+                                                    );
+                                                }
+
+    ESTRUTURA BÁSICA DO APP:
+                                                import React from 'react';
+                                                import './global.css';
+
+                                                import Routes from "./routes";
+
+                                                function App() {
+                                                  return (
+                                                    <div>
+                                                      <Routes/>
+                                                    </div>
+                                                  );
+                                                }
+
+                                                export default App;
+
+11. Depois do front terminado, falta apenas CONECTAR O FRONT COM O BACK:
+    Entrar na pasta de back no terminal e rodar "npm start" pra que ele fiquei rodando em background.
+
+12. Instalar o cliente http rodando "npm install axios" na pasta de front. 
+
+13. Dentro da pasta 'src' criar uma pasta chamada 'services' e dentro um arquivo 'api.js':
+
+    ESTRUTURA BÁSICA DO ARQUIVO API:
+                                                import axios from 'axios';
+
+                                                const api = axios.create({
+                                                    baseURL: 'http://localhost:3333',
+                                                })
+
+                                                export default api;
+    importar o api.js dentro de todos os index.js de todas as páginas.
+
+14. Criar uma função handle para mudar as rotas da nossa aplicação: (Lembrar que tem que mudar todas as variáveis
+    do body em estados, usando o useState() e const [id, setId] = useState(''););
+
+    ESTRUTURA BÁSICA DE UMA FUNÇÃO HANDLE:
+                                                    async function handleRegister(e){
+                                                        e.preventDefault();
+
+                                                        const data = { name,email,whatsapp,city,uf};
+
+                                                        try {
+                                                            const response = await api.post('ongs', data);
+                                                            alert(`Seu ID de acesso: ${response.data.id}`);
+                                                            history.push('/')
+                                                        } catch(err){
+                                                            alert('Erro no cadastro, tente novamente.');
+                                                        }
+                                                    }
+
+    E lembrar de botar no botão onde muda de página a função:
+
+                                                    <form onSubmit = {handleRegister}>
+
+15. Caso você queira armazenar uma variável que precise ser acessada em toda a aplicação (por exemplo: o nome e o id
+    da ONG que está logada), basta usar:
+
+                                                    localStorage.setItem('ongId', id);
+                                                    localStorage.setItem('ongName', response.data.name);            
+
+16. Quando temos dados dinâmicos que não sabemos quantos são (exemplo: incidents das ONGs), para mostrá-los na tela
+    temos que usar uma função chamada useEffect:   
+    
+    ESTRUTURA BÁSICA DE UMA LISTA COM TAMANHO INDEFINIDO DE OBJETOS:
+
+
+            const [incidents, setIncidents] = useState([]);
+
+
+            useEffect(() => {
+                api.get('profile', {                                            useEffect(() => { 
+                    headers: {       
+                        Authorization: ongId,                                   }, []);
+                    }
+                }).then(response => {
+                    setIncidents(response.data);
+                })
+            }, [ongId]);
+
+
+17. Em XML, a lista dinâmica de objetos:
+
+                                    <ul>
+                                        {incidents.map(incident => (
+                                        <li key = { incident.id } >
+                                            <strong>CASO:</strong>
+                                            <p>{incident.title}</p>
+
+                                            <strong>DESCRIÇÕES:</strong>
+                                            <p>{incident.description}</p>
+
+                                            <strong>VALOR:</strong>
+                                            <p>{Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(incident.value)}</p>
+
+                                            <button type = "button" onClick = {() => handleDeleteIncident(incident.id)}>
+                                                <FiTrash size = {20} color = "#a8a8b3" />
+                                            </button>
+                                        </li>
+                                        ))}
+                                    </ul>
+
+
+
+

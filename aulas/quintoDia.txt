@@ -1,7 +1,7 @@
 
 QUINTO DIA - SEMANA OMNISTACK
 
-VALIDAÇÕES - TESTES - DEPLOY
+VALIDAÇÕES - TESTES - DEPLOY 
 
 
 1. Instalar dentro da pasta de backend "npm install celebrate" para o pacote de validações;
