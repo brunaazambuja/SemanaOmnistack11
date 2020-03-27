@@ -61,7 +61,7 @@ MOBILE - REACT NATIVE
 7. Para configurar o ícone e a splash sreen (tela mostrada enquanto o app carrega) basta colocar as imagens dentro da pasta 
     mobile/assets com os nomes icon.png e splash.png.
 
-8. Criamos uma pasta dentro chamada pages de src (pasta criada para armazenar todos os códigos feitos por nós), que irá armazenar 
+8. Criamos uma pasta dentro de src chamada pages (pasta criada para armazenar todos os códigos feitos por nós), que irá armazenar 
     todas as páginas do app. Cada página terá sua pasta própria dentro da pasta 'pages', contendo em si um 'index.js' e um
     'styles.js' (importante notar que o arquivo de styles é JS agora, não mais CSS).
 
@@ -132,17 +132,69 @@ MOBILE - REACT NATIVE
                                                                         container: {}
                                                                     });
 
-14. Instala rodando no terminal "expo install expo-constants" e importá-lo em styles.js "import Constants from 'expo-constants'".
+14. Instala rodando no terminal "expo install expo-constants" e importá-lo em styles.js "import Constants from 'expo-constants'". Pacote
+    que define automaticamente a altura do cabeçalho de cada dispositivo mobile.
 
-15. Para instalar a funcionalidade de enviar email do próprio app, rodar no terminal "expo install expo-mail-composer".
+15. Para importar a biblioteca de ícones para mobile, basta importar: "import {Feather} from '@expo-/vector-icons'" e usá-lo como tag:
+    "<Feather name = "arrow-right" size = {16} color = "#FFF" />".
 
-16. Depois de feito o FrontEnd do nosso aplicativo mobile, devemos entrar na pasta do backend, e rodar "npm install" para 
+16. Para usar uma lista dinâmica de dados, usamos a tag FlatList, para que possemos usar o scroll do mobile. Basta importar no 'index.js'
+    com "import { View, FlatList, Image, Text, TouchableOpacity } from 'react-native';" e usá-lo:
+
+    ESTRUTURA BÁSICA DE UMA FLAT LIST:
+
+            <FlatList 
+                data = {incidents}
+                style = {styles.incidentList}
+                keyExtractor = {incident => String(incident.id)}
+                showsVerticalScrollIndicator = {false}
+                onEndReached = {loadIncidents}
+                onEndReachedThreshold = {0.2}
+                renderItem = {({ item: incident }) => (
+
+                    <View style = {styles.incident}>
+                        <Text style = {styles.incidentProperty}>ONG:</Text>
+                        <Text style = {styles.incidentValue}>{incident.name}</Text>
+                    
+                        <Text style = {styles.incidentProperty}>CASO:</Text>
+                        <Text style = {styles.incidentValue}>{incident.description}</Text>
+                    
+                        <Text style = {styles.incidentProperty}>VALOR:</Text>
+                        <Text style = {styles.incidentValue}>
+                            {Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(incident.value)}
+                        </Text>
+                    
+                        <TouchableOpacity style = {styles.detailsButton} onPress = {() => navigateToDetail(incident)}>
+                            <Text style = {styles.detailsButtonText}>Ver mais detalhes</Text>
+                            <Feather name = 'arrow-right' size = {16} color = '#E02041' />
+                        </TouchableOpacity>
+                    </View>
+                )}
+            />
+
+17. Para usar um paralelo ao useHistory no desenvolvimento web, usamos o useNavigation no mobile.
+
+
+    
+
+
+
+
+
+    
+                        function navigateToDetail(incident) {
+                            navigation.navigate('Detail', { incident });
+                        }
+
+17. Para instalar a funcionalidade de enviar email do próprio app, rodar no terminal "expo install expo-mail-composer".
+
+18. Depois de feito o FrontEnd do nosso aplicativo mobile, devemos entrar na pasta do backend, e rodar "npm install" para 
     iniciar a aplicação. Para testar se já está funcionando, abrir o Insomnia e ver se quando dá um 'send' ele retorna os dados.
 
-17. Dentro da pasta mobile rodar no terminal "npm install axios" que é o cliente http que vai ser responsável por fazer as 
+19. Dentro da pasta mobile rodar no terminal "npm install axios" que é o cliente http que vai ser responsável por fazer as 
     chamas API e trazer o resultado do nosso backend com o Node. 
 
-18. Criar pasta 'services' com 'api.js' dentro: 
+20. Criar pasta 'services' com 'api.js' dentro: 
                                                                     import axios from 'axios';
 
                                                                     const api = axios.create({
