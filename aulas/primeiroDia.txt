@@ -77,3 +77,6 @@ PASSOS:
     com 'localhost:3000'.
 
 8. Instalar o Expo no celular, pela AppStore, ou PlayStore mesmo.
+
+
+                                                                                    FIM DA CONFIGURAÇÃO DE AMBIENTE

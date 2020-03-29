@@ -175,3 +175,7 @@ PASSOS:
 
 15. Instalar o módulo de segurança CORS - rodar "npm install cors" e dentro do arquivo 'index.js':
     "const cors = require('cors');"     e       "app.use(cors());".
+
+
+
+                                                                                    FIM DA CONFIGURAÇÃO DO BACKEND

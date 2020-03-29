@@ -174,27 +174,56 @@ MOBILE - REACT NATIVE
 
 17. Para usar um paralelo ao useHistory no desenvolvimento web, usamos o useNavigation no mobile.
 
+    ESTRUTURA BÁSICA DE UMA FUNÇÃO NAVIGATION (quando queremos passar um parâmetro específico para a página, 
+        por exemplo, em Detail só vamos mostrar os dados de um incident só):
+        
+                                                    function navigateToDetail(incident) {
+                                                        navigation.navigate('Detail', { incident });
+                                                    }
 
-    
+    OU:                         
+                                                    function navigateIncidents(){
+                                                        navigation.goBack();
+                                                    }
+
+    E:
+                                                    <TouchableOpacity onPress = {navigateIncidents}>
+
+
+18. Para instalar a funcionalidade de enviar email do próprio app, rodar no terminal "expo install expo-mail-composer".
+
+19. Importar a função de enviar email dentro do app:
+                                                    import * as MailComposer from 'expo-mail-composer';
+
+    E a função de enviar whatsapp dentro do app, junto com as outras funções dentro do próprio react-native:
+                                                    import { Linking } from 'react-native';
+
+
+20. As funções de enviar por email e enviar por whatsapp ficam mais ou menos assim:
+
+                                                    function sendMail(){
+                                                        MailComposer.composeAsync({
+                                                            subject: `Herói do caso: ${incident.title}`,
+                                                            recipients: [incident.email],
+                                                            body: message
+                                                        })
+                                                    }
+                                                
+                                                    function sendWhatsapp(){
+                                                        Linking.openURL(`whatsapp://send?phone=${incident.whatsapp}&text=${message}`);
+                                                    }
+    contendo uma mensagem separada em uma constante:
+        const message = `Olá ${incident.name}, estou entrando em contato pois gostaria de ajudar no caso "${incident.title}" com o valor de ${Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(incident.value)}`;
 
 
 
-
-
-    
-                        function navigateToDetail(incident) {
-                            navigation.navigate('Detail', { incident });
-                        }
-
-17. Para instalar a funcionalidade de enviar email do próprio app, rodar no terminal "expo install expo-mail-composer".
-
-18. Depois de feito o FrontEnd do nosso aplicativo mobile, devemos entrar na pasta do backend, e rodar "npm install" para 
+21. Depois de feito o FrontEnd do nosso aplicativo mobile, devemos entrar na pasta do backend, e rodar "npm start" para 
     iniciar a aplicação. Para testar se já está funcionando, abrir o Insomnia e ver se quando dá um 'send' ele retorna os dados.
 
-19. Dentro da pasta mobile rodar no terminal "npm install axios" que é o cliente http que vai ser responsável por fazer as 
+22. Dentro da pasta mobile rodar no terminal "npm install axios" que é o cliente http que vai ser responsável por fazer as 
     chamas API e trazer o resultado do nosso backend com o Node. 
 
-20. Criar pasta 'services' com 'api.js' dentro: 
+23. Criar pasta 'services' com 'api.js' dentro: 
                                                                     import axios from 'axios';
 
                                                                     const api = axios.create({
@@ -203,11 +232,131 @@ MOBILE - REACT NATIVE
 
                                                                     export default api;
 
-19. Instalar pacote INTL para formatar valores numéricos "npm install intl" e importar esse pacote em App.js, assim ele vai estar
+    E importá-la dentro das páginas que iremos usar (pages/umaPagina/index.js): 
+
+                                                                    import api from '../../services/api';
+
+
+24. Para carregar uma informação, lista dinâmica, assim que o usuário entrar para ser exibido em tela, usamos um pacote chamado
+    'useEffect', importamos ele de dentro do 'react':
+                                                                    import React, { useState, useEffect } from 'react';
+
+25. Para fazer uma lista dinâmica, devemos criar um estado para os dados que serão listados dinamicamente:
+                                                                    const [incidents, setIncidents] = useState([]);
+                                                                    const [total, setTotal] = useState(0);
+
+    Criar uma função para carregar os dados (nesse casos, incidents):
+
+                                                                    async function loadIncidents(){
+
+                                                                        const response = await api.get('incidents');
+
+                                                                        setIncidents([response.data]);
+                                                                        setTotal(response.headers['x-total-count']);
+                                                                    }
+
+    Criar uma função de useEffect que irá chamar a função de carregar os dados:
+
+                                                                    useEffect(() => {
+                                                                        loadIncidents();
+                                                                    }, []);
+
+
+    Dentro do XML, em FlatList - lista dinâmica, iremos chamar a função de carregar os dados, e completar os dados
+        de acordo com o incidente atual:
+
+                                                                    <FlatList 
+                                                                        data = {incidents}
+                                                                        style = {styles.incidentList}
+                                                                        keyExtractor = {incident => String(incident.id)}
+                                                                        showsVerticalScrollIndicator = {true}
+                                                                        onEndReached = {loadIncidents}
+                                                                        onEndReachedThreshold = {0.2}
+                                                                        renderItem = {({ item: incident }) => (
+
+                                                                            <View style = {styles.incident}>
+                                                                                <Text style = {styles.incidentProperty}>ONG:</Text>
+                                                                                <Text style = {styles.incidentValue}>{incident.name}</Text>
+
+                                                                                <Text style = {styles.incidentProperty}>CASO:</Text>
+                                                                                <Text style = {styles.incidentValue}>{incident.description}</Text>
+
+                                                                                <Text style = {styles.incidentProperty}>VALOR:</Text>
+                                                                                <Text style = {styles.incidentValue}>
+                                                                                    {Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(incident.value)}
+                                                                                </Text>
+
+                                                                                <TouchableOpacity style = {styles.detailsButton} onPress = {() => navigateToDetail(incident)}>
+                                                                                    <Text style = {styles.detailsButtonText}>Ver mais detalhes</Text>
+                                                                                    <Feather name = 'arrow-right' size = {16} color = '#E02041' />
+                                                                                </TouchableOpacity>
+                                                                            </View>
+                                                                        )}
+                                                                    />
+
+
+
+26. Instalar pacote INTL para formatar valores numéricos "npm install intl" e importar esse pacote em App.js, assim ele vai estar
     disponível para todos os arquivos   import 'intl'; 
                                         import 'intl/locale-data/jsonp/pt-BR';
 
-20. Sempre que precisar passar uma função que tem parâmetros, passar como:
+    Agora podemos usar o pacote para formatar os números que forem necessários:
+
+                                        {Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(incident.value)}
+
+
+27. Para testar se na página de Detail, os dados do incident estão vindo corretamente, devemos importar em 'pages/Detail/index.js'
+    o useRoute:
+                                        import { useNavigation, useRoute } from '@react-navigation/native';
+    
+    E usar essa função de rotas para setar o incident atual:
+
+                                        const route = useRoute();
+                                
+                                        const incident = route.params.incident;
+
+    E dentro do XML daquele incidente em 'Detail', botar os dados do incidente atual, o mesmo feito em 'Incidents/index.js'.
+
+
+28. Para fazer o scroll infinito e mostrar todos os dados na página de Incidents, e não apenas os 5 primeiros, devemos criar    
+    um estado para fazer a numeração de página:
+                                        const [page, setPage] = useState(1);
+                                        const [loading, setLoading] = useState(false);
+
+    Então, a estruturação da função que carrega os dados, ficaria assim:
+
+                                                                        async function loadIncidents(){
+                Caso já esteja carregando,          <-------                if (loading){
+                espere, não tente carregar mais                                 return;
+                                                                            }
+
+                Caso o total já tenha sido atingido <-------                if (total > 0 && incidents.length == total){
+                pare de carregar também                                         return;
+                                                                            }
+
+                                                                            setLoading(true);
+
+                Passar para nossa URL em que página <-------                const response = await api.get('incidents', {
+                    estamos                                                     params: {page}
+                                                                            });
+
+                Para apenas anexar os valores       <-------                setIncidents([...incidents, ...response.data]);
+                novos de incidentes, e não sobrescrever                     setTotal(response.headers['x-total-count']);
+                a página x pela página x+1 (forma de anexar 
+                dois vetores = [...incidents, ...response.data])
+                                                                            setPage(page + 1);
+                                                                            setLoading(false);
+                                                                        }
+
+    Na FlatList, devemos também passar dois parâmetros para a tag, que irá carregar mais incidentes quando chegar no final,
+        e carregar quando faltar 20% do scroll:
+                                                                            onEndReached = {loadIncidents}
+                                                                            onEndReachedThreshold = {0.2}
+
+
+
+
+29. Sempre que precisar passar uma função que tem parâmetros, passar como:
                     onPress = {() => navigateToDetail(incident)}
     pois se eu passasse apenas:
                     onPress = {navigateToDetail(incident)}
@@ -223,3 +372,7 @@ TIPS:
 
     PARA RODAR O MOBILE BASTA RODAR "npm start" NA PASTA MOBILE E NA PASTA DO BACKEND.
     PARA RODAR O WEB BASTA RODAR "npm start" NA PASTA FRONTEND E NA PASTA DO BACKEND.
+
+
+
+                                                                                    FIM DA CONFIGURAÇÃO DO FRONTEND MOBILE

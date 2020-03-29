@@ -222,4 +222,4 @@ PASSOS:
 
 
 
-
+                                                                                    FIM DA CONFIGURAÇÃO DO FRONTEND WEB

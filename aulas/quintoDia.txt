@@ -155,3 +155,7 @@ VALIDAÇÕES - TESTES - DEPLOY
 15. Se queremos dar deploy na nossa aplicação backend, tem um plano de graça no site Heroku (assistir vídeo RocketSeat deploy 
     Heroku Node). Caso o produto tenha crescido e vire comercial, temos o site Digital Ocean, para hospedar nossa aplicação.
     Já no caso da aplicação frontend, podemos usar o plano gratuito do Netlify.
+
+
+
+                                                                                    FIM DA CONFIGURAÇÃO DE VALIDAÇÕES E TESTES
